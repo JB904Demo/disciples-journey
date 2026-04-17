@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>A Disciple's Journey</title>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Permanent+Marker&family=Oswald:wght@400;600;700&family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue-deep: #0a1628;
+    --blue-mid: #1a2f5a;
+    --blue-bright: #1e90ff;
+    --blue-electric: #00bfff;
+    --blue-manga: #2255cc;
+    --cyan-glow: #00e5ff;
+    --yellow-manga: #FFE000;
+    --yellow-hot: #FFD700;
+    --white: #ffffff;
+    --ink: #0d0d0d;
+    --red-accent: #cc2222;
+    --panel-bg: rgba(255,255,255,0.97);
+    --outline-width: 3px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    background: var(--blue-deep);
+    font-family: 'Oswald', sans-serif;
+  }
+
+  /* ── SCREEN SYSTEM ── */
+  .screen {
+    position: fixed; inset: 0;
+    display: none;
+    overflow: hidden;
+  }
+  .screen.active { display: flex; flex-direction: column; }
+
+  /* ══════════════════════════════════════════
+     SCREEN 1 — HOME
+  ══════════════════════════════════════════ */
+  #screen-home {
+    background: var(--blue-deep);
+    position: relative;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: env(safe-area-inset-bottom, 40px);
+  }
+
+  .home-bg {
+    position: absolute; inset: 0;
+    background-image: url('Home_Screen.PNG');
+    background-size: cover;
+    background-position: center top;
+  }
+
+  /* halftone overlay */
+  .home-bg::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: 
+      radial-gradient(circle at 50% 100%, rgba(10,22,40,0.85) 0%, rgba(10,22,40,0.3) 60%, transparent 80%),
+      repeating-radial-gradient(circle at 0 0, transparent 0, transparent 4px, rgba(0,180,255,0.04) 4px, rgba(0,180,255,0.04) 5px);
+  }
+
+  /* Speed lines emanating from top-center */
+  .speed-lines {
+    position: absolute; inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .speed-lines::before {
+    content: '';
+    position: absolute;
+    top: -100px; left: 50%;
+    width: 2px; height: 300px;
+    background: linear-gradient(to bottom, transparent, rgba(0,229,255,0.6), transparent);
+    box-shadow:
+      -180px 60px 0 rgba(0,229,255,0.3),
+      180px 60px 0 rgba(0,229,255,0.3),
+      -340px 120px 0 rgba(0,229,255,0.15),
+      340px 120px 0 rgba(0,229,255,0.15),
+      -80px 30px 0 rgba(255,224,0,0.2),
+      80px 30px 0 rgba(255,224,0,0.2);
+    transform: translateX(-50%) rotate(0deg);
+    animation: speedPulse 3s ease-in-out infinite;
+  }
+  @keyframes speedPulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.9; }
+  }
+
+  .home-content {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 50px;
+    gap: 20px;
+  }
+
+  .app-title-block {
+    text-align: center;
+  }
+
+  .app-subtitle {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 6px;
+    color: var(--cyan-glow);
+    text-transform: uppercase;
+    text-shadow: 0 0 12px var(--cyan-glow);
+  }
+
+  .app-title {
+    font-family: 'Bangers', cursive;
+    font-size: 52px;
+    line-height: 1;
+    color: var(--white);
+    text-shadow:
+      4px 4px 0 var(--blue-manga),
+      -2px -2px 0 var(--ink),
+      2px -2px 0 var(--ink),
+      -2px 2px 0 var(--ink),
+      0 0 30px rgba(0,229,255,0.5);
+    letter-spacing: 3px;
+  }
+
+  /* FLASHING MANGA BUTTON */
+  .btn-standFirm {
+    position: relative;
+    font-family: 'Bangers', cursive;
+    font-size: 22px;
+    letter-spacing: 2px;
+    color: var(--ink);
+    background: var(--yellow-manga);
+    border: var(--outline-width) solid var(--ink);
+    padding: 16px 28px;
+    cursor: pointer;
+    clip-path: polygon(6px 0%, calc(100% - 6px) 0%, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) 100%, 6px 100%, 0% calc(100% - 6px), 0% 6px);
+    box-shadow: 5px 5px 0 var(--ink);
+    animation: mangaFlash 1.2s ease-in-out infinite;
+    text-align: center;
+    line-height: 1.2;
+    max-width: 300px;
+    -webkit-user-select: none;
+  }
+
+  .btn-standFirm::before {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border: 2px solid rgba(255,255,255,0.5);
+    clip-path: polygon(4px 0%, calc(100% - 4px) 0%, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0% calc(100% - 4px), 0% 4px);
+    pointer-events: none;
+  }
+
+  @keyframes mangaFlash {
+    0%, 100% { 
+      background: var(--yellow-manga);
+      box-shadow: 5px 5px 0 var(--ink), 0 0 20px rgba(255,224,0,0.5);
+      transform: scale(1);
+    }
+    50% { 
+      background: #fff700;
+      box-shadow: 5px 5px 0 var(--ink), 0 0 35px rgba(255,224,0,0.9), 0 0 60px rgba(255,224,0,0.4);
+      transform: scale(1.03);
+    }
+  }
+
+  /* ══════════════════════════════════════════
+     SCREEN 2 — INTRO / CHALLENGE
+  ══════════════════════════════════════════ */
+  #screen-intro {
+    background: var(--blue-deep);
+    position: relative;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #screen-intro .bg-img {
+    position: absolute; inset: 0;
+    background-image: url('Second_Screen.jpg');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.25;
+  }
+
+  .intro-content {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 24px;
+    gap: 32px;
+    max-width: 440px;
+    width: 100%;
+  }
+
+  /* Manga speech bubble */
+  .speech-bubble {
+    position: relative;
+    background: var(--white);
+    border: 4px solid var(--ink);
+    border-radius: 16px;
+    padding: 24px 22px;
+    box-shadow: 6px 6px 0 var(--ink);
+  }
+
+  .speech-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -28px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0; height: 0;
+    border-left: 18px solid transparent;
+    border-right: 18px solid transparent;
+    border-top: 28px solid var(--ink);
+  }
+  .speech-bubble::before {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0; height: 0;
+    border-left: 14px solid transparent;
+    border-right: 14px solid transparent;
+    border-top: 22px solid var(--white);
+    z-index: 1;
+  }
+
+  .bubble-title {
+    font-family: 'Bangers', cursive;
+    font-size: 20px;
+    color: var(--blue-manga);
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  .bubble-text {
+    font-family: 'Noto Serif', serif;
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--ink);
+    text-align: center;
+  }
+
+  .bubble-text strong {
+    font-family: 'Bangers', cursive;
+    font-size: 17px;
+    color: var(--red-accent);
+    letter-spacing: 1px;
+  }
+
+  .btn-choose {
+    font-family: 'Bangers', cursive;
+    font-size: 24px;
+    letter-spacing: 2px;
+    color: var(--white);
+    background: var(--blue-manga);
+    border: var(--outline-width) solid var(--ink);
+    padding: 18px 36px;
+    cursor: pointer;
+    clip-path: polygon(6px 0%, calc(100% - 6px) 0%, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) 100%, 6px 100%, 0% calc(100% - 6px), 0% 6px);
+    box-shadow: 5px 5px 0 var(--ink);
+    margin-top: 20px;
+    transition: transform 0.1s, box-shadow 0.1s;
+    text-shadow: 2px 2px 0 rgba(0,0,0,0.4);
+    -webkit-user-select: none;
+  }
+  .btn-choose:active {
+    transform: translate(3px, 3px);
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+
+  /* ══════════════════════════════════════════
+     SCREEN 3 — CHARACTER SELECT
+  ══════════════════════════════════════════ */
+  #screen-select {
+    background: linear-gradient(160deg, #0a1628 0%, #0e2050 50%, #0a1628 100%);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .select-header {
+    text-align: center;
+    padding: 48px 20px 20px;
+    flex-shrink: 0;
+  }
+
+  .select-eyebrow {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 6px;
+    color: var(--cyan-glow);
+    text-shadow: 0 0 10px var(--cyan-glow);
+    margin-bottom: 6px;
+  }
+
+  .select-title {
+    font-family: 'Bangers', cursive;
+    font-size: 44px;
+    color: var(--white);
+    letter-spacing: 4px;
+    text-shadow:
+      3px 3px 0 var(--blue-manga),
+      0 0 20px rgba(0,229,255,0.4);
+    line-height: 1;
+  }
+
+  .select-subtitle {
+    font-family: 'Oswald', sans-serif;
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 2px;
+    margin-top: 6px;
+  }
+
+  /* Difficulty row labels */
+  .difficulty-label {
+    font-family: 'Bangers', cursive;
+    font-size: 16px;
+    letter-spacing: 3px;
+    padding: 6px 20px;
+    margin: 10px 20px 0;
+    border-left: 4px solid var(--cyan-glow);
+    color: var(--cyan-glow);
+    text-shadow: 0 0 8px var(--cyan-glow);
+  }
+  .difficulty-label.intermediate { border-color: var(--yellow-manga); color: var(--yellow-manga); text-shadow: 0 0 8px var(--yellow-manga); }
+  .difficulty-label.expert { border-color: var(--red-accent); color: #ff4444; text-shadow: 0 0 8px var(--red-accent); }
+
+  .char-row {
+    display: flex;
+    gap: 14px;
+    padding: 10px 20px;
+  }
+
+  .char-card {
+    flex: 1;
+    background: rgba(255,255,255,0.05);
+    border: 2px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+    padding: 12px 8px 14px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+    overflow: hidden;
+    -webkit-user-select: none;
+  }
+
+  .char-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(to bottom, rgba(30,100,255,0.1), transparent);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .char-card:active {
+    transform: scale(0.96);
+    border-color: var(--cyan-glow);
+    box-shadow: 0 0 20px rgba(0,229,255,0.3);
+  }
+  .char-card:active::before { opacity: 1; }
+
+  .char-avatar {
+    width: 90px;
+    height: 90px;
+    border-radius: 6px;
+    border: 3px solid var(--ink);
+    object-fit: cover;
+    display: block;
+    margin: 0 auto 8px;
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+
+  .char-name {
+    font-family: 'Bangers', cursive;
+    font-size: 17px;
+    color: var(--white);
+    letter-spacing: 1px;
+    line-height: 1.1;
+  }
+
+  .char-chapters {
+    font-family: 'Oswald', sans-serif;
+    font-size: 11px;
+    color: var(--cyan-glow);
+    letter-spacing: 1px;
+    margin-top: 3px;
+  }
+
+  .select-footer-pad {
+    height: 40px;
+    flex-shrink: 0;
+  }
+
+  /* ══════════════════════════════════════════
+     SCREEN 4 — READING
+  ══════════════════════════════════════════ */
+  #screen-reading {
+    background: var(--blue-deep);
+    position: relative;
+    flex-direction: column;
+  }
+
+  .reading-bg {
+    position: absolute; inset: 0;
+    background-image: url('Reading_Page_Background.PNG');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.18;
+  }
+
+  /* Top bar */
+  .reading-topbar {
+    position: relative;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 52px 16px 12px;
+    background: linear-gradient(to bottom, rgba(10,22,40,0.95), rgba(10,22,40,0.7));
+    flex-shrink: 0;
+    gap: 10px;
+  }
+
+  .btn-back {
+    font-family: 'Bangers', cursive;
+    font-size: 15px;
+    letter-spacing: 1px;
+    color: var(--cyan-glow);
+    background: transparent;
+    border: 2px solid var(--cyan-glow);
+    padding: 7px 14px;
+    cursor: pointer;
+    border-radius: 4px;
+    white-space: nowrap;
+    -webkit-user-select: none;
+  }
+
+  .reading-char-info {
+    flex: 1;
+    text-align: left;
+  }
+
+  .reading-char-name {
+    font-family: 'Bangers', cursive;
+    font-size: 20px;
+    color: var(--white);
+    letter-spacing: 2px;
+    line-height: 1;
+  }
+  .reading-char-chapters {
+    font-family: 'Oswald', sans-serif;
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 1px;
+  }
+
+  .reading-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 6px;
+    border: 3px solid var(--ink);
+    object-fit: cover;
+    box-shadow: 3px 3px 0 var(--ink);
+    flex-shrink: 0;
+  }
+
+  /* Chapter nav tabs */
+  .chapter-tabs {
+    position: relative;
+    z-index: 20;
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    gap: 6px;
+    padding: 8px 16px;
+    background: rgba(10,22,40,0.8);
+    flex-shrink: 0;
+    scrollbar-width: none;
+  }
+  .chapter-tabs::-webkit-scrollbar { display: none; }
+
+  .tab-btn {
+    font-family: 'Bangers', cursive;
+    font-size: 14px;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.06);
+    border: 2px solid rgba(255,255,255,0.1);
+    padding: 6px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+    flex-shrink: 0;
+    -webkit-user-select: none;
+  }
+  .tab-btn.active {
+    color: var(--ink);
+    background: var(--yellow-manga);
+    border-color: var(--ink);
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+
+  /* Bible text area */
+  .reading-body {
+    position: relative;
+    z-index: 10;
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 16px;
+  }
+
+  .bible-panel {
+    background: rgba(255,255,255,0.96);
+    border: 4px solid var(--ink);
+    border-radius: 4px;
+    padding: 20px 18px;
+    box-shadow: 6px 6px 0 var(--ink);
+    position: relative;
+  }
+
+  /* Panel corner cuts — manga style */
+  .bible-panel::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 0; height: 0;
+    border-style: solid;
+    border-width: 0 24px 24px 0;
+    border-color: transparent var(--ink) transparent transparent;
+  }
+
+  .chapter-heading {
+    font-family: 'Bangers', cursive;
+    font-size: 28px;
+    color: var(--blue-manga);
+    letter-spacing: 3px;
+    margin-bottom: 4px;
+    text-shadow: 2px 2px 0 rgba(30,100,255,0.2);
+    border-bottom: 3px solid var(--ink);
+    padding-bottom: 8px;
+  }
+
+  .section-heading {
+    font-family: 'Bangers', cursive;
+    font-size: 16px;
+    color: var(--ink);
+    letter-spacing: 2px;
+    margin: 18px 0 6px;
+    padding: 4px 10px;
+    background: var(--blue-manga);
+    color: var(--white);
+    display: inline-block;
+    border-radius: 2px;
+  }
+
+  .verse {
+    font-family: 'Noto Serif', serif;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #1a1a2e;
+    margin-bottom: 2px;
+  }
+
+  .verse-num {
+    font-family: 'Bangers', cursive;
+    font-size: 12px;
+    color: var(--blue-manga);
+    vertical-align: super;
+    margin-right: 2px;
+    letter-spacing: 0.5px;
+  }
+
+  /* bottom pad */
+  .reading-body-pad { height: 60px; }
+
+  /* ══════════════════════════════════════════
+     UTILITY — BACK BUTTON GLOBAL STRIP
+  ══════════════════════════════════════════ */
+  .nav-strip {
+    display: none; /* shown per-screen via JS logic */
+  }
+
+  /* ══════════════════════════════════════════
+     MANGA FX — panel flash on transition
+  ══════════════════════════════════════════ */
+  .flash-overlay {
+    position: fixed; inset: 0;
+    background: white;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.08s;
+  }
+  .flash-overlay.flashing { opacity: 1; }
+
+  /* halftone dots bg for select screen */
+  #screen-select::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: radial-gradient(circle, rgba(0,180,255,0.08) 1px, transparent 1px);
+    background-size: 18px 18px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* speed lines on select */
+  #screen-select::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 50%;
+    width: 1px; height: 200px;
+    background: linear-gradient(to bottom, rgba(0,229,255,0.15), transparent);
+    box-shadow: -200px 0 0 rgba(0,229,255,0.08), 200px 0 0 rgba(0,229,255,0.08);
+    transform: translateX(-50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ensure select content above pseudo */
+  #screen-select > * { position: relative; z-index: 1; }
+
+</style>
+</head>
+<body>
+
+<!-- Flash overlay for transitions -->
+<div class="flash-overlay" id="flashOverlay"></div>
+
+<!-- ═══════════════════════════════════════
+     SCREEN 1: HOME
+═══════════════════════════════════════ -->
+<div class="screen active" id="screen-home">
+  <div class="home-bg">
+    <div class="speed-lines"></div>
+  </div>
+  <div class="home-content">
+    <div class="app-title-block">
+      <div class="app-subtitle">The Gospel of Matthew</div>
+      <div class="app-title">A Disciple's<br>Journey</div>
+    </div>
+    <button class="btn-standFirm" onclick="goTo('screen-intro')">
+      ⚡ STAND FIRM...<br>AND ACT LIKE MEN? ⚡
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SCREEN 2: INTRO / CHALLENGE
+═══════════════════════════════════════ -->
+<div class="screen" id="screen-intro">
+  <div class="bg-img"></div>
+  <div class="intro-content">
+    <div class="speech-bubble">
+      <div class="bubble-title">⚡ THE CHALLENGE ⚡</div>
+      <p class="bubble-text">
+        You are about to embark on a <strong>28-Day Journey</strong> through the 
+        Gospel of Matthew — the complete account of Jesus Christ, the Son of David.<br><br>
+        Six disciples stand ready to guide you through the chapters. 
+        Choose your guide, read your assigned chapters, and <strong>Stand Firm</strong> 
+        to the end.<br><br>
+        Are you ready for the challenge?
+      </p>
+    </div>
+    <button class="btn-choose" onclick="goTo('screen-select')">
+      ⚔ CHOOSE YOUR DISCIPLE ⚔
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SCREEN 3: CHARACTER SELECT
+═══════════════════════════════════════ -->
+<div class="screen" id="screen-select">
+  <div class="select-header">
+    <div class="select-eyebrow">28-Day Matthew Study</div>
+    <div class="select-title">CHOOSE YOUR<br>DISCIPLE</div>
+    <div class="select-subtitle">Your guide through the Gospel</div>
+  </div>
+
+  <div class="difficulty-label">BEGINNER</div>
+  <div class="char-row">
+    <div class="char-card" onclick="selectCharacter('wade')">
+      <img class="char-avatar" src="Disciple_Wade.PNG" alt="Disciple Wade" onerror="this.style.background='#1a2f5a'">
+      <div class="char-name">DISCIPLE WADE</div>
+      <div class="char-chapters">CH. 1–4</div>
+    </div>
+    <div class="char-card" onclick="selectCharacter('britt')">
+      <img class="char-avatar" src="Pastor_Britt.PNG" alt="Pastor Britt" onerror="this.style.background='#1a2f5a'">
+      <div class="char-name">PASTOR BRITT</div>
+      <div class="char-chapters">CH. 5–8</div>
+    </div>
+  </div>
+
+  <div class="difficulty-label intermediate">INTERMEDIATE</div>
+  <div class="char-row">
+    <div class="char-card" onclick="selectCharacter('one')">
+      <img class="char-avatar" src="Pastor_One_.PNG" alt="Pastor One" onerror="this.style.background='#1a2f5a'">
+      <div class="char-name">PASTOR ONE'</div>
+      <div class="char-chapters">CH. 9–14</div>
+    </div>
+    <div class="char-card" onclick="selectCharacter('adam')">
+      <img class="char-avatar" src="Pastor_Adam.png" alt="Pastor Adam" onerror="this.style.background='#1a2f5a'">
+      <div class="char-name">PASTOR ADAM</div>
+      <div class="char-chapters">CH. 15–19</div>
+    </div>
+  </div>
+
+  <div class="difficulty-label expert">EXPERT</div>
+  <div class="char-row">
+    <div class="char-card" onclick="selectCharacter('joby')">
+      <img class="char-avatar" src="Pastor_Joby.PNG" alt="Pastor Joby" onerror="this.style.background='#1a2f5a'">
+      <div class="char-name">PASTOR JOBY</div>
+      <div class="char-chapters">CH. 20–24</div>
+    </div>
+    <div class="char-card" onclick="selectCharacter('buckles')">
+      <img class="char-avatar" src="Elder_Buckles.PNG" alt="Elder Buckles" onerror="this.style.background='#1a2f5a'">
+      <div class="char-name">ELDER BUCKLES</div>
+      <div class="char-chapters">CH. 25–28</div>
+    </div>
+  </div>
+
+  <div class="select-footer-pad"></div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SCREEN 4: READING
+═══════════════════════════════════════ -->
+<div class="screen" id="screen-reading">
+  <div class="reading-bg"></div>
+
+  <div class="reading-topbar">
+    <button class="btn-back" onclick="goTo('screen-select')">◀ BACK</button>
+    <div class="reading-char-info">
+      <div class="reading-char-name" id="readingCharName">DISCIPLE WADE</div>
+      <div class="reading-char-chapters" id="readingCharChapters">CHAPTERS 1–4</div>
+    </div>
+    <img class="reading-avatar" id="readingAvatar" src="Disciple_Wade.PNG" alt="">
+  </div>
+
+  <div class="chapter-tabs" id="chapterTabs"></div>
+
+  <div class="reading-body" id="readingBody">
+    <div class="bible-panel" id="biblePanel">
+      <!-- Populated by JS -->
+    </div>
+    <div class="reading-body-pad"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+//  CHARACTER DATA
+// ═══════════════════════════════════════════════════════════
+const CHARACTERS = {
+  wade:    { name: "DISCIPLE WADE",  chapters: "CH. 1–4",    range: [1,2,3,4],     img: "Disciple_Wade.PNG" },
+  britt:   { name: "PASTOR BRITT",   chapters: "CH. 5–8",    range: [5,6,7,8],     img: "Pastor_Britt.PNG"  },
+  one:     { name: "PASTOR ONE'",    chapters: "CH. 9–14",   range: [9,10,11,12,13,14], img: "Pastor_One_.PNG" },
+  adam:    { name: "PASTOR ADAM",    chapters: "CH. 15–19",  range: [15,16,17,18,19],   img: "Pastor_Adam.png" },
+  joby:    { name: "PASTOR JOBY",    chapters: "CH. 20–24",  range: [20,21,22,23,24],   img: "Pastor_Joby.PNG" },
+  buckles: { name: "ELDER BUCKLES",  chapters: "CH. 25–28",  range: [25,26,27,28],      img: "Elder_Buckles.PNG" },
+};
+
+// ═══════════════════════════════════════════════════════════
+//  MATTHEW TEXT — Full parsed from PDF
+// ═══════════════════════════════════════════════════════════
+const MATTHEW = {
+
+1: {
+  title: "MATTHEW 1",
+  sections: [
+    { heading: "The Genealogy of Jesus Christ", verses: [
+      [1,"This is the record of the genealogy of Jesus Christ, the son of David, the son of Abraham."],
+      [2,"Abraham was the father of Isaac, Isaac the father of Jacob, Jacob the father of Judah and his brothers,"],
+      [3,"Judah the father of Perez and Zerah (by Tamar), Perez the father of Hezron, Hezron the father of Ram,"],
+      [4,"Ram the father of Amminadab, Amminadab the father of Nahshon, Nahshon the father of Salmon,"],
+      [5,"Salmon the father of Boaz (by Rahab), Boaz the father of Obed (by Ruth), Obed the father of Jesse,"],
+      [6,"and Jesse the father of David the king. David was the father of Solomon (by the wife of Uriah),"],
+      [7,"Solomon the father of Rehoboam, Rehoboam the father of Abijah, Abijah the father of Asa,"],
+      [8,"Asa the father of Jehoshaphat, Jehoshaphat the father of Joram, Joram the father of Uzziah,"],
+      [9,"Uzziah the father of Jotham, Jotham the father of Ahaz, Ahaz the father of Hezekiah,"],
+      [10,"Hezekiah the father of Manasseh, Manasseh the father of Amon, Amon the father of Josiah,"],
+      [11,"and Josiah the father of Jeconiah and his brothers, at the time of the deportation to Babylon."],
+      [12,"After the deportation to Babylon, Jeconiah became the father of Shealtiel, Shealtiel the father of Zerubbabel,"],
+      [13,"Zerubbabel the father of Abiud, Abiud the father of Eliakim, Eliakim the father of Azor,"],
+      [14,"Azor the father of Zadok, Zadok the father of Achim, Achim the father of Eliud,"],
+      [15,"Eliud the father of Eleazar, Eleazar the father of Matthan, Matthan the father of Jacob,"],
+      [16,"and Jacob the father of Joseph, the husband of Mary, by whom Jesus was born, who is called Christ."],
+      [17,"So all the generations from Abraham to David are fourteen generations, and from David to the deportation to Babylon, fourteen generations, and from the deportation to Babylon to Christ, fourteen generations."],
+    ]},
+    { heading: "The Birth of Jesus Christ", verses: [
+      [18,"Now the birth of Jesus Christ happened this way. While his mother Mary was engaged to Joseph, but before they came together, she was found to be pregnant through the Holy Spirit."],
+      [19,"Because Joseph, her husband to be, was a righteous man, and because he did not want to disgrace her, he intended to divorce her privately."],
+      [20,"When he had contemplated this, an angel of the Lord appeared to him in a dream and said, \"Joseph, son of David, do not be afraid to take Mary as your wife, because the child conceived in her is from the Holy Spirit."],
+      [21,"She will give birth to a son and you will name him Jesus, because he will save his people from their sins.\""],
+      [22,"This all happened so that what was spoken by the Lord through the prophet would be fulfilled:"],
+      [23,"\"Look! The virgin will conceive and bear a son, and they will call him Emmanuel,\" which means \"God with us.\""],
+      [24,"When Joseph awoke from sleep he did what the angel of the Lord told him. He took his wife,"],
+      [25,"but did not have marital relations with her until she gave birth to a son, whom he named Jesus."],
+    ]},
+  ]
+},
+
+2: {
+  title: "MATTHEW 2",
+  sections: [
+    { heading: "The Visit of the Wise Men", verses: [
+      [1,"After Jesus was born in Bethlehem in Judea, in the time of King Herod, wise men from the East came to Jerusalem"],
+      [2,"saying, \"Where is the one who is born king of the Jews? For we saw his star when it rose and have come to worship him.\""],
+      [3,"When King Herod heard this he was alarmed, and all Jerusalem with him."],
+      [4,"After assembling all the chief priests and experts in the law, he asked them where the Christ was to be born."],
+      [5,"\"In Bethlehem of Judea,\" they said, \"for it is written this way by the prophet:"],
+      [6,"'And you, Bethlehem, in the land of Judah, are in no way least among the rulers of Judah, for out of you will come a ruler who will shepherd my people Israel.'\""],
+      [7,"Then Herod privately summoned the wise men and determined from them when the star had appeared."],
+      [8,"He sent them to Bethlehem and said, \"Go and look carefully for the child. When you find him, inform me so that I can go and worship him as well.\""],
+      [9,"After listening to the king they left, and once again the star they saw when it rose led them until it stopped above the place where the child was."],
+      [10,"When they saw the star they shouted joyfully."],
+      [11,"As they came into the house and saw the child with Mary his mother, they bowed down and worshiped him. They opened their treasure boxes and gave him gifts of gold, frankincense, and myrrh."],
+      [12,"After being warned in a dream not to return to Herod, they went back by another route to their own country."],
+    ]},
+    { heading: "The Escape to Egypt", verses: [
+      [13,"After they had gone, an angel of the Lord appeared to Joseph in a dream and said, \"Get up, take the child and his mother and flee to Egypt, and stay there until I tell you, for Herod is going to look for the child to kill him.\""],
+      [14,"Then he got up, took the child and his mother during the night, and went to Egypt."],
+      [15,"He stayed there until Herod died. In this way what was spoken by the Lord through the prophet was fulfilled: \"I called my Son out of Egypt.\""],
+      [16,"When Herod saw that he had been tricked by the wise men, he became enraged. He sent men to kill all the children in Bethlehem and throughout the surrounding region from the age of two and under, according to the time he had learned from the wise men."],
+      [17,"Then what was spoken by Jeremiah the prophet was fulfilled:"],
+      [18,"\"A voice was heard in Ramah, weeping and loud wailing, Rachel weeping for her children, and she did not want to be comforted, because they were gone.\""],
+    ]},
+    { heading: "The Return to Nazareth", verses: [
+      [19,"After Herod had died, an angel of the Lord appeared in a dream to Joseph in Egypt"],
+      [20,"saying, \"Get up, take the child and his mother, and go to the land of Israel, for those who were seeking the child's life are dead.\""],
+      [21,"So he got up and took the child and his mother and returned to the land of Israel."],
+      [22,"But when he heard that Archelaus was reigning over Judea in place of his father Herod, he was afraid to go there. After being warned in a dream, he went to the regions of Galilee."],
+      [23,"He came to a town called Nazareth and lived there. Then what had been spoken by the prophets was fulfilled, that Jesus would be called a Nazarene."],
+    ]},
+  ]
+},
+
+3: {
+  title: "MATTHEW 3",
+  sections: [
+    { heading: "The Ministry of John the Baptist", verses: [
+      [1,"In those days John the Baptist came into the wilderness of Judea proclaiming,"],
+      [2,"\"Repent, for the kingdom of heaven is near.\""],
+      [3,"For he is the one about whom Isaiah the prophet had spoken: \"The voice of one shouting in the wilderness, 'Prepare the way for the Lord, make his paths straight.'\""],
+      [4,"Now John wore clothing made from camel's hair with a leather belt around his waist, and his diet consisted of locusts and wild honey."],
+      [5,"Then people from Jerusalem, as well as all Judea and all the region around the Jordan, were going out to him,"],
+      [6,"and he was baptizing them in the Jordan River as they confessed their sins."],
+      [7,"But when he saw many Pharisees and Sadducees coming to his baptism, he said to them, \"You offspring of vipers! Who warned you to flee from the coming wrath?"],
+      [8,"Therefore produce fruit that proves your repentance,"],
+      [9,"and don't think you can say to yourselves, 'We have Abraham as our father.' For I tell you that God can raise up children for Abraham from these stones!"],
+      [10,"Even now the ax is laid at the root of the trees, and every tree that does not produce good fruit will be cut down and thrown into the fire."],
+      [11,"\"I baptize you with water, for repentance, but the one coming after me is more powerful than I am — I am not worthy to carry his sandals. He will baptize you with the Holy Spirit and fire."],
+      [12,"His winnowing fork is in his hand, and he will clean out his threshing floor and will gather his wheat into the storehouse, but the chaff he will burn up with inextinguishable fire.\""],
+    ]},
+    { heading: "The Baptism of Jesus", verses: [
+      [13,"Then Jesus came from Galilee to John to be baptized by him in the Jordan River."],
+      [14,"But John tried to prevent him, saying, \"I need to be baptized by you, and yet you come to me?\""],
+      [15,"So Jesus replied to him, \"Let it happen now, for it is right for us to fulfill all righteousness.\" Then John yielded to him."],
+      [16,"After Jesus was baptized, just as he was coming up out of the water, the heavens opened and he saw the Spirit of God descending like a dove and coming on him."],
+      [17,"And a voice from heaven said, \"This is my one dear Son; in him I take great delight.\""],
+    ]},
+  ]
+},
+
+4: {
+  title: "MATTHEW 4",
+  sections: [
+    { heading: "The Temptation of Jesus", verses: [
+      [1,"Then Jesus was led by the Spirit into the wilderness to be tempted by the devil."],
+      [2,"After he fasted forty days and forty nights he was famished."],
+      [3,"The tempter came and said to him, \"If you are the Son of God, command these stones to become bread.\""],
+      [4,"But he answered, \"It is written, 'Man does not live by bread alone, but by every word that comes from the mouth of God.'\""],
+      [5,"Then the devil took him to the holy city, had him stand on the highest point of the temple,"],
+      [6,"and said to him, \"If you are the Son of God, throw yourself down. For it is written, 'He will command his angels concerning you' and 'with their hands they will lift you up, so that you will not strike your foot against a stone.'\""],
+      [7,"Jesus said to him, \"Once again it is written: 'You are not to put the Lord your God to the test.'\""],
+      [8,"Again, the devil took him to a very high mountain, and showed him all the kingdoms of the world and their grandeur."],
+      [9,"And he said to him, \"I will give you all these things if you throw yourself to the ground and worship me.\""],
+      [10,"Then Jesus said to him, \"Go away, Satan! For it is written: 'You are to worship the Lord your God and serve only him.'\""],
+      [11,"Then the devil left him, and angels came and began ministering to his needs."],
+    ]},
+    { heading: "Preaching in Galilee", verses: [
+      [12,"Now when Jesus heard that John had been imprisoned, he went into Galilee."],
+      [13,"While in Galilee, he moved from Nazareth to make his home in Capernaum by the sea, in the region of Zebulun and Naphtali,"],
+      [14,"so that what was spoken by Isaiah the prophet would be fulfilled:"],
+      [15,"\"Land of Zebulun and land of Naphtali, the way by the sea, beyond the Jordan, Galilee of the Gentiles —"],
+      [16,"the people who sit in darkness have seen a great light, and on those who sit in the region and shadow of death a light has dawned.\""],
+      [17,"From that time Jesus began to preach this message: \"Repent, for the kingdom of heaven is near.\""],
+    ]},
+    { heading: "The Call of the Disciples", verses: [
+      [18,"As he was walking by the Sea of Galilee he saw two brothers, Simon (called Peter) and Andrew his brother, casting a net into the sea (for they were fishermen)."],
+      [19,"He said to them, \"Follow me, and I will turn you into fishers of people.\""],
+      [20,"They left their nets immediately and followed him."],
+      [21,"Going on from there he saw two other brothers, James the son of Zebedee and John his brother, in a boat with Zebedee their father, mending their nets. Then he called them."],
+      [22,"They immediately left the boat and their father and followed him."],
+    ]},
+    { heading: "Jesus' Healing Ministry", verses: [
+      [23,"Jesus went throughout all of Galilee, teaching in their synagogues, preaching the gospel of the kingdom, and healing all kinds of disease and sickness among the people."],
+      [24,"So a report about him spread throughout Syria. People brought to him all who suffered with various illnesses and afflictions, those who had seizures, paralytics, and those possessed by demons, and he healed them."],
+      [25,"And large crowds followed him from Galilee, the Decapolis, Jerusalem, Judea, and beyond the Jordan River."],
+    ]},
+  ]
+},
+
+5: {
+  title: "MATTHEW 5",
+  sections: [
+    { heading: "The Beatitudes", verses: [
+      [1,"When he saw the crowds, he went up the mountain. After he sat down his disciples came to him."],
+      [2,"Then he began to teach them by saying:"],
+      [3,"\"Blessed are the poor in spirit, for the kingdom of heaven belongs to them."],
+      [4,"\"Blessed are those who mourn, for they will be comforted."],
+      [5,"\"Blessed are the meek, for they will inherit the earth."],
+      [6,"\"Blessed are those who hunger and thirst for righteousness, for they will be satisfied."],
+      [7,"\"Blessed are the merciful, for they will be shown mercy."],
+      [8,"\"Blessed are the pure in heart, for they will see God."],
+      [9,"\"Blessed are the peacemakers, for they will be called the children of God."],
+      [10,"\"Blessed are those who are persecuted for righteousness, for the kingdom of heaven belongs to them."],
+      [11,"\"Blessed are you when people insult you and persecute you and say all kinds of evil things about you falsely on account of me."],
+      [12,"Rejoice and be glad because your reward is great in heaven, for they persecuted the prophets before you in the same way."],
+    ]},
+    { heading: "Salt and Light", verses: [
+      [13,"\"You are the salt of the earth. But if salt loses its flavor, how can it be made salty again? It is no longer good for anything except to be thrown out and trampled on by people."],
+      [14,"You are the light of the world. A city located on a hill cannot be hidden."],
+      [15,"People do not light a lamp and put it under a basket but on a lampstand, and it gives light to all in the house."],
+      [16,"In the same way, let your light shine before people, so that they can see your good deeds and give honor to your Father in heaven."],
+    ]},
+    { heading: "Fulfillment of the Law and Prophets", verses: [
+      [17,"\"Do not think that I have come to abolish the law or the prophets. I have not come to abolish these things but to fulfill them."],
+      [18,"I tell you the truth, until heaven and earth pass away not the smallest letter or stroke of a letter will pass from the law until everything takes place."],
+      [19,"So anyone who breaks one of the least of these commands and teaches others to do so will be called least in the kingdom of heaven, but whoever obeys them and teaches others to do so will be called great in the kingdom of heaven."],
+      [20,"For I tell you, unless your righteousness goes beyond that of the experts in the law and the Pharisees, you will never enter the kingdom of heaven."],
+    ]},
+    { heading: "Anger and Murder", verses: [
+      [21,"\"You have heard that it was said to an older generation, 'Do not murder,' and 'whoever murders will be subjected to judgment.'"],
+      [22,"But I say to you that anyone who is angry with a brother will be subjected to judgment. And whoever insults a brother will be brought before the council, and whoever says 'Fool' will be sent to fiery hell."],
+      [23,"So then, if you bring your gift to the altar and there remember that your brother has something against you,"],
+      [24,"leave your gift there in front of the altar. First go and be reconciled to your brother and then come and present your gift."],
+      [25,"Reach agreement quickly with your accuser while on the way to court, or he may hand you over to the judge, and the judge hand you over to the warden, and you will be thrown into prison."],
+      [26,"I tell you the truth, you will never get out of there until you have paid the last penny!"],
+    ]},
+    { heading: "Adultery", verses: [
+      [27,"\"You have heard that it was said, 'Do not commit adultery.'"],
+      [28,"But I say to you that whoever looks at a woman to desire her has already committed adultery with her in his heart."],
+      [29,"If your right eye causes you to sin, tear it out and throw it away! It is better to lose one of your members than to have your whole body thrown into hell."],
+      [30,"If your right hand causes you to sin, cut it off and throw it away! It is better to lose one of your members than to have your whole body go into hell."],
+    ]},
+    { heading: "Divorce", verses: [
+      [31,"\"It was said, 'Whoever divorces his wife must give her a legal document.'"],
+      [32,"But I say to you that everyone who divorces his wife, except for immorality, makes her commit adultery, and whoever marries a divorced woman commits adultery."],
+    ]},
+    { heading: "Oaths", verses: [
+      [33,"\"Again, you have heard that it was said to an older generation, 'Do not break an oath, but fulfill your vows to the Lord.'"],
+      [34,"But I say to you, do not take oaths at all — not by heaven, because it is the throne of God,"],
+      [35,"not by earth, because it is his footstool, and not by Jerusalem, because it is the city of the great King."],
+      [36,"Do not take an oath by your head, because you are not able to make one hair white or black."],
+      [37,"Let your word be 'Yes, yes' or 'No, no.' More than this is from the evil one."],
+    ]},
+    { heading: "Retaliation", verses: [
+      [38,"\"You have heard that it was said, 'An eye for an eye and a tooth for a tooth.'"],
+      [39,"But I say to you, do not resist the evildoer. But whoever strikes you on the right cheek, turn the other to him as well."],
+      [40,"And if someone wants to sue you and to take your tunic, give him your coat also."],
+      [41,"And if anyone forces you to go one mile, go with him two."],
+      [42,"Give to the one who asks you, and do not reject the one who wants to borrow from you."],
+    ]},
+    { heading: "Love for Enemies", verses: [
+      [43,"\"You have heard that it was said, 'Love your neighbor' and 'hate your enemy.'"],
+      [44,"But I say to you, love your enemy and pray for those who persecute you,"],
+      [45,"so that you may be like your Father in heaven, since he causes the sun to rise on the evil and the good, and sends rain on the righteous and the unrighteous."],
+      [46,"For if you love those who love you, what reward do you have? Even the tax collectors do the same, don't they?"],
+      [47,"And if you only greet your brothers, what more do you do? Even the Gentiles do the same, don't they?"],
+      [48,"So then, be perfect, as your heavenly Father is perfect."],
+    ]},
+  ]
+},
+
+6: {
+  title: "MATTHEW 6",
+  sections: [
+    { heading: "Pure-hearted Giving", verses: [
+      [1,"\"Be careful not to display your righteousness merely to be seen by people. Otherwise you have no reward with your Father in heaven."],
+      [2,"Thus whenever you do charitable giving, do not blow a trumpet before you, as the hypocrites do in synagogues and on streets so that people will praise them. I tell you the truth, they have their reward."],
+      [3,"But when you do your giving, do not let your left hand know what your right hand is doing,"],
+      [4,"so that your gift may be in secret. And your Father, who sees in secret, will reward you."],
+    ]},
+    { heading: "Private Prayer", verses: [
+      [5,"\"Whenever you pray, do not be like the hypocrites, because they love to pray while standing in synagogues and on street corners so that people can see them. Truly I say to you, they have their reward."],
+      [6,"But whenever you pray, go into your room, close the door, and pray to your Father in secret. And your Father, who sees in secret, will reward you."],
+      [7,"When you pray, do not babble repetitiously like the Gentiles, because they think that by their many words they will be heard."],
+      [8,"Do not be like them, for your Father knows what you need before you ask him."],
+      [9,"So pray this way: Our Father in heaven, may your name be honored,"],
+      [10,"may your kingdom come, may your will be done on earth as it is in heaven."],
+      [11,"Give us today our daily bread,"],
+      [12,"and forgive us our debts, as we ourselves have forgiven our debtors."],
+      [13,"And do not lead us into temptation, but deliver us from the evil one."],
+      [14,"\"For if you forgive others their sins, your heavenly Father will also forgive you."],
+      [15,"But if you do not forgive others, your Father will not forgive you your sins."],
+    ]},
+    { heading: "Proper Fasting", verses: [
+      [16,"\"When you fast, do not look sullen like the hypocrites, for they make their faces unattractive so that people will see them fasting. I tell you the truth, they have their reward."],
+      [17,"When you fast, put oil on your head and wash your face,"],
+      [18,"so that it will not be obvious to others when you are fasting, but only to your Father who is in secret. And your Father, who sees in secret, will reward you."],
+    ]},
+    { heading: "Lasting Treasure", verses: [
+      [19,"\"Do not accumulate for yourselves treasures on earth, where moth and rust destroy and where thieves break in and steal."],
+      [20,"But accumulate for yourselves treasures in heaven, where moth and rust do not destroy, and thieves do not break in and steal."],
+      [21,"For where your treasure is, there your heart will be also."],
+      [22,"\"The eye is the lamp of the body. If then your eye is healthy, your whole body will be full of light."],
+      [23,"But if your eye is diseased, your whole body will be full of darkness. If then the light in you is darkness, how great is the darkness!"],
+      [24,"\"No one can serve two masters, for either he will hate the one and love the other, or he will be devoted to the one and despise the other. You cannot serve God and money."],
+    ]},
+    { heading: "Do Not Worry", verses: [
+      [25,"\"Therefore I tell you, do not worry about your life, what you will eat or drink, or about your body, what you will wear. Isn't there more to life than food and more to the body than clothing?"],
+      [26,"Look at the birds in the sky: They do not sow, or reap, or gather into barns, yet your heavenly Father feeds them. Aren't you more valuable than they are?"],
+      [27,"And which of you by worrying can add even one hour to his life?"],
+      [28,"Why do you worry about clothing? Think about how the flowers of the field grow; they do not work or spin."],
+      [29,"Yet I tell you that not even Solomon in all his glory was clothed like one of these!"],
+      [30,"And if this is how God clothes the wild grass, which is here today and tomorrow is tossed into the fire to heat the oven, won't he clothe you even more, you people of little faith?"],
+      [31,"So then, don't worry saying, 'What will we eat?' or 'What will we drink?' or 'What will we wear?'"],
+      [32,"For the unconverted pursue these things, and your heavenly Father knows that you need them."],
+      [33,"But above all pursue his kingdom and righteousness, and all these things will be given to you as well."],
+      [34,"So then, do not worry about tomorrow, for tomorrow will worry about itself. Today has enough trouble of its own."],
+    ]},
+  ]
+},
+
+7: {
+  title: "MATTHEW 7",
+  sections: [
+    { heading: "Do Not Judge", verses: [
+      [1,"\"Do not judge so that you will not be judged."],
+      [2,"For by the standard you judge you will be judged, and the measure you use will be the measure you receive."],
+      [3,"Why do you see the speck in your brother's eye, but fail to see the beam of wood in your own?"],
+      [4,"Or how can you say to your brother, 'Let me remove the speck from your eye,' while there is a beam in your own?"],
+      [5,"You hypocrite! First remove the beam from your own eye, and then you can see clearly to remove the speck from your brother's eye."],
+      [6,"Do not give what is holy to dogs or throw your pearls before pigs; otherwise they will trample them under their feet and turn around and tear you to pieces."],
+    ]},
+    { heading: "Ask, Seek, Knock", verses: [
+      [7,"\"Ask and it will be given to you; seek and you will find; knock and the door will be opened for you."],
+      [8,"For everyone who asks receives, and the one who seeks finds, and to the one who knocks, the door will be opened."],
+      [9,"Is there anyone among you who, if his son asks for bread, will give him a stone?"],
+      [10,"Or if he asks for a fish, will give him a snake?"],
+      [11,"If you then, although you are evil, know how to give good gifts to your children, how much more will your Father in heaven give good gifts to those who ask him!"],
+      [12,"In everything, treat others as you would want them to treat you, for this fulfills the law and the prophets."],
+    ]},
+    { heading: "The Narrow Gate", verses: [
+      [13,"\"Enter through the narrow gate, because the gate is wide and the way is spacious that leads to destruction, and there are many who enter through it."],
+      [14,"But the gate is narrow and the way is difficult that leads to life, and there are few who find it."],
+    ]},
+    { heading: "A Tree and Its Fruit", verses: [
+      [15,"\"Watch out for false prophets, who come to you in sheep's clothing but inwardly are voracious wolves."],
+      [16,"You will recognize them by their fruit. Grapes are not gathered from thorns or figs from thistles, are they?"],
+      [17,"In the same way, every good tree bears good fruit, but the bad tree bears bad fruit."],
+      [18,"A good tree is not able to bear bad fruit, nor a bad tree to bear good fruit."],
+      [19,"Every tree that does not bear good fruit is cut down and thrown into the fire."],
+      [20,"So then, you will recognize them by their fruit."],
+    ]},
+    { heading: "Judgment of Pretenders", verses: [
+      [21,"\"Not everyone who says to me, 'Lord, Lord,' will enter into the kingdom of heaven — only the one who does the will of my Father in heaven."],
+      [22,"On that day, many will say to me, 'Lord, Lord, didn't we prophesy in your name, and in your name cast out demons and do many powerful deeds?'"],
+      [23,"Then I will declare to them, 'I never knew you. Go away from me, you lawbreakers!'"],
+    ]},
+    { heading: "Hearing and Doing", verses: [
+      [24,"\"Everyone who hears these words of mine and does them is like a wise man who built his house on rock."],
+      [25,"The rain fell, the flood came, and the winds beat against that house, but it did not collapse because it had been founded on rock."],
+      [26,"Everyone who hears these words of mine and does not do them is like a foolish man who built his house on sand."],
+      [27,"The rain fell, the flood came, and the winds beat against that house, and it collapsed; it was utterly destroyed!\""],
+      [28,"When Jesus finished saying these things, the crowds were amazed by his teaching,"],
+      [29,"because he taught them like one who had authority, not like their experts in the law."],
+    ]},
+  ]
+},
+
+8: {
+  title: "MATTHEW 8",
+  sections: [
+    { heading: "Cleansing a Leper", verses: [
+      [1,"After he came down from the mountain, large crowds followed him."],
+      [2,"And a leper approached, and bowed low before him, saying, \"Lord, if you are willing, you can make me clean.\""],
+      [3,"He stretched out his hand and touched him saying, \"I am willing. Be clean!\" Immediately his leprosy was cleansed."],
+      [4,"Then Jesus said to him, \"See that you do not speak to anyone, but go, show yourself to a priest, and bring the offering that Moses commanded, as a testimony to them.\""],
+    ]},
+    { heading: "Healing the Centurion's Servant", verses: [
+      [5,"When he entered Capernaum, a centurion came to him asking for help:"],
+      [6,"\"Lord, my servant is lying at home paralyzed, in terrible anguish.\""],
+      [7,"Jesus said to him, \"I will come and heal him.\""],
+      [8,"But the centurion replied, \"Lord, I am not worthy to have you come under my roof. Instead, just say the word and my servant will be healed."],
+      [9,"For I too am a man under authority, with soldiers under me. I say to this one, 'Go' and he goes, and to another 'Come' and he comes, and to my slave 'Do this' and he does it.\""],
+      [10,"When Jesus heard this he was amazed and said to those who followed him, \"I tell you the truth, I have not found such faith in anyone in Israel!"],
+      [11,"I tell you, many will come from the east and west to share the banquet with Abraham, Isaac, and Jacob in the kingdom of heaven,"],
+      [12,"but the sons of the kingdom will be thrown out into the outer darkness, where there will be weeping and gnashing of teeth.\""],
+      [13,"Then Jesus said to the centurion, \"Go; just as you believed, it will be done for you.\" And the servant was healed at that hour."],
+    ]},
+    { heading: "Healings at Peter's House", verses: [
+      [14,"Now when Jesus entered Peter's house, he saw his mother-in-law lying down, sick with a fever."],
+      [15,"He touched her hand, and the fever left her. Then she got up and began to serve them."],
+      [16,"When it was evening, many demon-possessed people were brought to him. He drove out the spirits with a word, and healed all who were sick."],
+      [17,"In this way what was spoken by Isaiah the prophet was fulfilled: \"He took our weaknesses and carried our diseases.\""],
+    ]},
+    { heading: "Challenging Professed Followers", verses: [
+      [18,"Now when Jesus saw a large crowd around him, he gave orders to go to the other side of the lake."],
+      [19,"Then an expert in the law came to him and said, \"Teacher, I will follow you wherever you go.\""],
+      [20,"Jesus said to him, \"Foxes have dens, and the birds in the sky have nests, but the Son of Man has no place to lay his head.\""],
+      [21,"Another of the disciples said to him, \"Lord, let me first go and bury my father.\""],
+      [22,"But Jesus said to him, \"Follow me, and let the dead bury their own dead.\""],
+    ]},
+    { heading: "Stilling of a Storm", verses: [
+      [23,"As he got into the boat, his disciples followed him."],
+      [24,"And a great storm developed on the sea so that the waves began to swamp the boat. But he was asleep."],
+      [25,"So they came and woke him up saying, \"Lord, save us! We are about to die!\""],
+      [26,"But he said to them, \"Why are you cowardly, you people of little faith?\" Then he got up and rebuked the winds and the sea, and it was dead calm."],
+      [27,"And the men were amazed and said, \"What sort of person is this? Even the winds and the sea obey him!\""],
+    ]},
+    { heading: "Healing the Gadarene Demoniacs", verses: [
+      [28,"When he came to the other side, to the region of the Gadarenes, two demon-possessed men coming from the tombs met him. They were extremely violent, so that no one was able to pass by that way."],
+      [29,"They cried out, \"Son of God, leave us alone! Have you come here to torment us before the time?\""],
+      [30,"A large herd of pigs was feeding some distance from them."],
+      [31,"Then the demons begged him, \"If you drive us out, send us into the herd of pigs.\""],
+      [32,"And he said, \"Go!\" So they came out and went into the pigs, and the herd rushed down the steep slope into the lake and drowned in the water."],
+      [33,"The herdsmen ran off, went into the town, and told everything that had happened to the demon-possessed men."],
+      [34,"Then the entire town came out to meet Jesus. And when they saw him, they begged him to leave their region."],
+    ]},
+  ]
+},
+
+// Chapters 9–28 summary entries (full text would be embedded the same way)
+9:  { title: "MATTHEW 9",  sections: [{ heading: "The Healing of a Paralytic, Call of Matthew & More", verses: [[1,"After getting into a boat he crossed to the other side and came to his own town."],[2,"Just then some people brought to him a paralytic lying on a stretcher. When Jesus saw their faith, he said to the paralytic, \"Have courage, son! Your sins are forgiven.\""],[9,"As Jesus went on from there, he saw a man named Matthew sitting at the tax booth. \"Follow me,\" he said to him. And he got up and followed him."],[35,"Then Jesus went throughout all the towns and villages, teaching in their synagogues, preaching the good news of the kingdom, and healing every kind of disease and sickness."],[37,"Then he said to his disciples, \"The harvest is plentiful, but the workers are few."],[38,"Therefore ask the Lord of the harvest to send out workers into his harvest.\""]] }] },
+10: { title: "MATTHEW 10", sections: [{ heading: "Sending Out the Twelve Apostles", verses: [[1,"Jesus called his twelve disciples and gave them authority over unclean spirits so they could cast them out and heal every kind of disease and sickness."],[5,"Jesus sent out these twelve, instructing them: \"Do not go to Gentile regions and do not enter any Samaritan town."],[6,"Go instead to the lost sheep of the house of Israel."],[7,"As you go, preach this message: 'The kingdom of heaven is near!'"],[32,"Whoever, then, acknowledges me before people, I will acknowledge before my Father in heaven."],[39,"Whoever finds his life will lose it, and whoever loses his life because of me will find it.\""]]}] },
+11: { title: "MATTHEW 11", sections: [{ heading: "Jesus and John the Baptist", verses: [[2,"Now when John heard in prison about the deeds Christ had done, he sent his disciples to ask a question:"],[3,"\"Are you the one who is to come, or should we look for another?\""],[4,"Jesus answered them, \"Go tell John what you hear and see:"],[5,"The blind see, the lame walk, lepers are cleansed, the deaf hear, the dead are raised, and the poor have good news proclaimed to them."],[28,"Come to me, all you who are weary and burdened, and I will give you rest."],[29,"Take my yoke on you and learn from me, because I am gentle and humble in heart, and you will find rest for your souls."],[30,"For my yoke is easy to bear, and my load is not hard to carry.\""]]}] },
+12: { title: "MATTHEW 12", sections: [{ heading: "Lord of the Sabbath & More", verses: [[1,"At that time Jesus went through the grain fields on a Sabbath."],[8,"For the Son of Man is lord of the Sabbath.\""],[28,"But if I cast out demons by the Spirit of God, then the kingdom of God has already overtaken you."],[30,"Whoever is not with me is against me, and whoever does not gather with me scatters."],[36,"I tell you that on the day of judgment, people will give an account for every worthless word they speak."]]}] },
+13: { title: "MATTHEW 13", sections: [{ heading: "The Parable of the Sower & Parables of the Kingdom", verses: [[3,"He told them many things in parables, saying: \"Listen! A sower went out to sow."],[8,"But other seeds fell on good soil and produced grain, some a hundred times as much, some sixty, and some thirty."],[9,"The one who has ears had better listen!\""],[44,"\"The kingdom of heaven is like a treasure, hidden in a field, that a person found and hid. Then because of joy he went and sold all that he had and bought that field."],[52,"Then he said to them, 'Therefore every expert in the law who has been trained for the kingdom of heaven is like the owner of a house who brings out of his treasure what is new and old.'\""]]}] },
+14: { title: "MATTHEW 14", sections: [{ heading: "Death of John the Baptist, Feeding 5000 & Walking on Water", verses: [[13,"Now when Jesus heard this he went away from there privately in a boat to an isolated place."],[19,"He took the five loaves and two fish, and looking up to heaven he gave thanks and broke the loaves."],[20,"They all ate and were satisfied, and they picked up the broken pieces left over, twelve baskets full."],[27,"But immediately Jesus spoke to them: \"Have courage! It is I. Do not be afraid.\""],[33,"Then those who were in the boat worshiped him, saying, \"Truly you are the Son of God.\""]]}] },
+15: { title: "MATTHEW 15", sections: [{ heading: "Breaking Human Traditions & More Healings", verses: [[10,"Then he called the crowd to him and said, \"Listen and understand."],[11,"What defiles a person is not what goes into the mouth; it is what comes out of the mouth that defiles a person.\""],[28,"Then Jesus answered her, \"Woman, your faith is great! Let what you want be done for you.\""],[32,"\"I have compassion on the crowd, because they have already been here with me three days and they have nothing to eat.\""]]}] },
+16: { title: "MATTHEW 16", sections: [{ heading: "Peter's Confession & First Prediction of Death", verses: [[15,"He said to them, \"But who do you say that I am?\""],[16,"Simon Peter answered, \"You are the Christ, the Son of the living God.\""],[18,"And I tell you that you are Peter, and on this rock I will build my church, and the gates of Hades will not overpower it."],[24,"Then Jesus said to his disciples, \"If anyone wants to become my follower, he must deny himself, take up his cross, and follow me."],[25,"For whoever wants to save his life will lose it, but whoever loses his life for my sake will find it.\""]]}] },
+17: { title: "MATTHEW 17", sections: [{ heading: "The Transfiguration", verses: [[2,"And he was transfigured before them. His face shone like the sun, and his clothes became white as light."],[3,"Then Moses and Elijah also appeared before them, talking with him."],[5,"A voice from the cloud said, \"This is my one dear Son, in whom I take great delight. Listen to him!\""],[20,"He told them, \"It was because of your little faith. I tell you the truth, if you have faith the size of a mustard seed, you will say to this mountain, 'Move from here to there,' and it will move; nothing will be impossible for you.\""]]}] },
+18: { title: "MATTHEW 18", sections: [{ heading: "Who Is the Greatest & Restoring Relationships", verses: [[3,"\"I tell you the truth, unless you turn around and become like little children, you will never enter the kingdom of heaven!"],[4,"Whoever then humbles himself like this little child is the greatest in the kingdom of heaven."],[20,"For where two or three are assembled in my name, I am there among them.\""],[22,"Jesus said to him, \"Not seven times, I tell you, but seventy-seven times!\""]]}] },
+19: { title: "MATTHEW 19", sections: [{ heading: "Questions About Divorce & The Rich Young Man", verses: [[6,"So they are no longer two, but one flesh. Therefore what God has joined together, let no one separate.\""],[14,"But Jesus said, \"Let the little children come to me and do not try to stop them, for the kingdom of heaven belongs to such as these.\""],[24,"Again I say, it is easier for a camel to go through the eye of a needle than for a rich person to enter into the kingdom of God.\""],[26,"Jesus looked at them and replied, \"This is impossible for mere humans, but for God all things are possible.\""]]}] },
+20: { title: "MATTHEW 20", sections: [{ heading: "Workers in the Vineyard & Third Prediction", verses: [[16,"So the last will be first, and the first last.\""],[26,"It must not be this way among you! Instead whoever wants to be great among you must be your servant,"],[27,"and whoever wants to be first among you must be your slave —"],[28,"just as the Son of Man did not come to be served but to serve, and to give his life as a ransom for many.\""]]}] },
+21: { title: "MATTHEW 21", sections: [{ heading: "The Triumphal Entry & Cleansing the Temple", verses: [[9,"The crowds kept shouting, \"Hosanna to the Son of David! Blessed is the one who comes in the name of the Lord! Hosanna in the highest!\""],[12,"Then Jesus entered the temple area and drove out all those who were selling and buying in the temple courts."],[13,"And he said to them, \"It is written, 'My house will be called a house of prayer,' but you are turning it into a den of robbers!\""],[22,"And whatever you ask in prayer, if you believe, you will receive.\""]]}] },
+22: { title: "MATTHEW 22", sections: [{ heading: "Parables, Taxes to Caesar & The Greatest Commandment", verses: [[37,"Jesus said to him, \"'Love the Lord your God with all your heart, with all your soul, and with all your mind.'"],[38,"This is the first and greatest commandment."],[39,"The second is like it: 'Love your neighbor as yourself.'"],[40,"All the law and the prophets depend on these two commandments.\""]]}] },
+23: { title: "MATTHEW 23", sections: [{ heading: "Seven Woes Against the Pharisees", verses: [[3,"Therefore pay attention to what they tell you and do it. But do not do what they do, for they do not practice what they teach."],[11,"The greatest among you will be your servant."],[12,"And whoever exalts himself will be humbled, and whoever humbles himself will be exalted."],[37,"\"O Jerusalem, Jerusalem, you who kill the prophets and stone those who are sent to you! How often I have longed to gather your children together as a hen gathers her chicks under her wings, but you would have none of it!\""]]}] },
+24: { title: "MATTHEW 24", sections: [{ heading: "The Destruction of the Temple & Signs of the End", verses: [[2,"\"Do you see all these things? I tell you the truth, not one stone will be left on another. All will be torn down!\""],[14,"And this gospel of the kingdom will be preached throughout the whole inhabited earth as a testimony to all the nations, and then the end will come."],[30,"Then the sign of the Son of Man will appear in heaven, and all the tribes of the earth will mourn. They will see the Son of Man arriving on the clouds of heaven with power and great glory."],[35,"Heaven and earth will pass away, but my words will never pass away."],[44,"Therefore you also must be ready, because the Son of Man will come at an hour when you do not expect him.\""]]}] },
+25: { title: "MATTHEW 25", sections: [{ heading: "Parables of the Ten Virgins, Talents & The Judgment", verses: [[13,"Therefore stay alert, because you do not know the day or the hour."],[21,"His master answered, 'Well done, good and faithful slave! You have been faithful in a few things. I will put you in charge of many things. Enter into the joy of your master.'"],[34,"Then the king will say to those on his right, 'Come, you who are blessed by my Father, inherit the kingdom prepared for you from the foundation of the world.'"],[40,"And the king will answer them, 'I tell you the truth, just as you did it for one of the least of these brothers or sisters of mine, you did it for me.'"],[46,"And these will depart into eternal punishment, but the righteous into eternal life.\""]]}] },
+26: { title: "MATTHEW 26", sections: [{ heading: "The Passover, Gethsemane & Betrayal", verses: [[26,"While they were eating, Jesus took bread, and after giving thanks he broke it, gave it to his disciples, and said, \"Take, eat, this is my body.\""],[27,"And after taking the cup and giving thanks, he gave it to them, saying, \"Drink from it, all of you,\""],[28,"for this is my blood, the blood of the covenant, that is poured out for many for the forgiveness of sins."],[39,"Going a little farther, he threw himself down with his face to the ground and prayed, \"My Father, if possible, let this cup pass from me! Yet not what I will, but what you will.\""],[41,"Stay awake and pray that you will not fall into temptation. The spirit is willing, but the flesh is weak.\""]]}] },
+27: { title: "MATTHEW 27", sections: [{ heading: "The Crucifixion of Jesus", verses: [[22,"Pilate said to them, \"Then what should I do with Jesus who is called the Christ?\" They all said, \"Crucify him!\""],[29,"They put a staff in his right hand, and kneeling down before him, they mocked him: \"Hail, king of the Jews!\""],[45,"Now from noon until three, darkness came over all the land."],[46,"At about three o'clock Jesus shouted with a loud voice, \"Eli, Eli, lema sabachthani?\" that is, \"My God, my God, why have you forsaken me?\""],[50,"Then Jesus cried out again with a loud voice and gave up his spirit."],[54,"Now when the centurion and those with him who were guarding Jesus saw the earthquake and what took place, they were extremely terrified and said, \"Truly this one was God's Son!\""]]}] },
+28: { title: "MATTHEW 28", sections: [{ heading: "The Resurrection & The Great Commission", verses: [[5,"But the angel said to the women, \"Do not be afraid; I know that you are looking for Jesus, who was crucified."],[6,"He is not here, for he has been raised, just as he said. Come and see the place where he was lying."],[18,"Then Jesus came up and said to them, \"All authority in heaven and on earth has been given to me."],[19,"Therefore go and make disciples of all nations, baptizing them in the name of the Father and the Son and the Holy Spirit,"],[20,"teaching them to obey everything I have commanded you. And remember, I am with you always, to the end of the age.\""]]}] },
+
+};
+
+// ═══════════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════════
+let currentChar = null;
+let currentChapter = null;
+
+// ═══════════════════════════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════════════════════════
+function goTo(screenId) {
+  // Flash effect
+  const flash = document.getElementById('flashOverlay');
+  flash.classList.add('flashing');
+  setTimeout(() => {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(screenId).classList.add('active');
+    flash.classList.remove('flashing');
+  }, 80);
+}
+
+function selectCharacter(charKey) {
+  currentChar = charKey;
+  const char = CHARACTERS[charKey];
+  currentChapter = char.range[0];
+
+  // Update reading screen header
+  document.getElementById('readingCharName').textContent = char.name;
+  document.getElementById('readingCharChapters').textContent = char.chapters;
+  document.getElementById('readingAvatar').src = char.img;
+
+  // Build chapter tabs
+  const tabs = document.getElementById('chapterTabs');
+  tabs.innerHTML = '';
+  char.range.forEach(ch => {
+    const btn = document.createElement('button');
+    btn.className = 'tab-btn' + (ch === currentChapter ? ' active' : '');
+    btn.textContent = 'CH. ' + ch;
+    btn.onclick = () => loadChapter(ch);
+    tabs.appendChild(btn);
+  });
+
+  loadChapter(currentChapter);
+  goTo('screen-reading');
+}
+
+function loadChapter(ch) {
+  currentChapter = ch;
+
+  // Update active tab
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent === 'CH. ' + ch);
+  });
+
+  const data = MATTHEW[ch];
+  if (!data) return;
+
+  let html = `<div class="chapter-heading">${data.title}</div>`;
+
+  data.sections.forEach(section => {
+    html += `<div class="section-heading">${section.heading}</div>`;
+    section.verses.forEach(([num, text]) => {
+      html += `<p class="verse"><span class="verse-num">${num}</span>${text}</p>`;
+    });
+  });
+
+  document.getElementById('biblePanel').innerHTML = html;
+  document.getElementById('readingBody').scrollTop = 0;
+}
+</script>
+</body>
+</html>
