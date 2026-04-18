@@ -295,7 +295,7 @@
 
   .select-header {
     text-align: center;
-    padding: 48px 20px 20px;
+    padding: 48px 20px 14px;
     flex-shrink: 0;
   }
 
@@ -320,92 +320,104 @@
     line-height: 1;
   }
 
-  .select-subtitle {
-    font-family: 'Oswald', sans-serif;
-    font-size: 13px;
-    color: rgba(255,255,255,0.5);
-    letter-spacing: 2px;
-    margin-top: 6px;
+  /* ── NEW GRID LAYOUT ── */
+  .select-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    grid-template-rows: repeat(3, auto);
+    gap: 0;
+    padding: 10px 12px 30px;
+    align-items: stretch;
   }
 
-  /* Difficulty row labels */
-  .difficulty-label {
-    font-family: 'Bangers', cursive;
-    font-size: 16px;
-    letter-spacing: 3px;
-    padding: 6px 20px;
-    margin: 10px 20px 0;
-    border-left: 4px solid var(--cyan-glow);
-    color: var(--cyan-glow);
-    text-shadow: 0 0 8px var(--cyan-glow);
-  }
-  .difficulty-label.intermediate { border-color: var(--yellow-manga); color: var(--yellow-manga); text-shadow: 0 0 8px var(--yellow-manga); }
-  .difficulty-label.expert { border-color: var(--red-accent); color: #ff4444; text-shadow: 0 0 8px var(--red-accent); }
-
-  .char-row {
-    display: flex;
-    gap: 14px;
-    padding: 10px 20px;
-  }
-
+  /* Left column cards */
   .char-card {
-    flex: 1;
-    background: rgba(255,255,255,0.05);
-    border: 2px solid rgba(255,255,255,0.15);
-    border-radius: 8px;
-    padding: 12px 8px 14px;
+    background: rgba(255,255,255,0.04);
+    border: 2px solid rgba(255,255,255,0.12);
+    border-radius: 6px;
+    padding: 8px 8px 10px;
     text-align: center;
     cursor: pointer;
     transition: all 0.15s;
     position: relative;
     overflow: hidden;
     -webkit-user-select: none;
-  }
-
-  .char-card::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: linear-gradient(to bottom, rgba(30,100,255,0.1), transparent);
-    opacity: 0;
-    transition: opacity 0.2s;
+    margin: 5px;
   }
 
   .char-card:active {
     transform: scale(0.96);
     border-color: var(--cyan-glow);
-    box-shadow: 0 0 20px rgba(0,229,255,0.3);
+    box-shadow: 0 0 20px rgba(0,229,255,0.35);
   }
-  .char-card:active::before { opacity: 1; }
 
   .char-avatar {
-    width: 90px;
-    height: 90px;
+    width: 100%;
+    aspect-ratio: 1 / 1;
     border-radius: 6px;
     border: 3px solid var(--ink);
     object-fit: cover;
     display: block;
-    margin: 0 auto 8px;
-    box-shadow: 3px 3px 0 var(--ink);
+    box-shadow: 4px 4px 0 var(--ink);
   }
 
   .char-name {
     font-family: 'Bangers', cursive;
-    font-size: 17px;
+    font-size: 18px;
     color: var(--white);
-    letter-spacing: 1px;
+    letter-spacing: 1.5px;
     line-height: 1.1;
+    margin-top: 7px;
+    text-shadow: 2px 2px 0 rgba(0,0,0,0.5);
   }
 
-  .char-chapters {
-    font-family: 'Oswald', sans-serif;
-    font-size: 11px;
-    color: var(--cyan-glow);
-    letter-spacing: 1px;
-    margin-top: 3px;
+  /* ── CENTER DIFFICULTY STRIP ── */
+  .difficulty-strip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    width: 36px;
+    padding: 5px 0;
   }
+
+  .diff-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    gap: 4px;
+  }
+
+  .diff-line {
+    width: 3px;
+    flex: 1;
+    max-height: 18px;
+    border-radius: 2px;
+  }
+
+  .diff-text {
+    font-family: 'Bangers', cursive;
+    font-size: 13px;
+    letter-spacing: 3px;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    white-space: nowrap;
+  }
+
+  .diff-block.beginner .diff-line { background: var(--cyan-glow); box-shadow: 0 0 6px var(--cyan-glow); }
+  .diff-block.beginner .diff-text { color: var(--cyan-glow); text-shadow: 0 0 8px var(--cyan-glow); }
+
+  .diff-block.intermediate .diff-line { background: var(--yellow-manga); box-shadow: 0 0 6px var(--yellow-manga); }
+  .diff-block.intermediate .diff-text { color: var(--yellow-manga); text-shadow: 0 0 8px var(--yellow-manga); }
+
+  .diff-block.expert .diff-line { background: #ff4444; box-shadow: 0 0 6px #ff4444; }
+  .diff-block.expert .diff-text { color: #ff4444; text-shadow: 0 0 8px #ff4444; }
 
   .select-footer-pad {
-    height: 40px;
+    height: 20px;
     flex-shrink: 0;
   }
 
@@ -694,51 +706,66 @@
   <div class="select-header">
     <div class="select-eyebrow">28-Day Matthew Study</div>
     <div class="select-title">CHOOSE YOUR<br>DISCIPLE</div>
-    <div class="select-subtitle">Your guide through the Gospel</div>
   </div>
 
-  <div class="difficulty-label">BEGINNER</div>
-  <div class="char-row">
-    <div class="char-card" onclick="selectCharacter('wade')">
+  <div class="select-grid">
+
+    <!-- ROW 1 LEFT: Wade -->
+    <div class="char-card" onclick="selectCharacter('wade')" style="grid-column:1; grid-row:1;">
       <img class="char-avatar" src="Disciple%20Wade.PNG" alt="Disciple Wade" onerror="this.style.background='#1a2f5a'">
       <div class="char-name">DISCIPLE WADE</div>
-      <div class="char-chapters">CH. 1–4</div>
     </div>
-    <div class="char-card" onclick="selectCharacter('britt')">
+
+    <!-- CENTER STRIP -->
+    <div class="difficulty-strip" style="grid-column:2; grid-row:1/4;">
+      <div class="diff-block beginner">
+        <div class="diff-line"></div>
+        <div class="diff-text">BEGINNER</div>
+        <div class="diff-line"></div>
+      </div>
+      <div class="diff-block intermediate">
+        <div class="diff-line"></div>
+        <div class="diff-text">INTERMEDIATE</div>
+        <div class="diff-line"></div>
+      </div>
+      <div class="diff-block expert">
+        <div class="diff-line"></div>
+        <div class="diff-text">EXPERT</div>
+        <div class="diff-line"></div>
+      </div>
+    </div>
+
+    <!-- ROW 1 RIGHT: Britt -->
+    <div class="char-card" onclick="selectCharacter('britt')" style="grid-column:3; grid-row:1;">
       <img class="char-avatar" src="Pastor%20Britt.PNG" alt="Pastor Britt" onerror="this.style.background='#1a2f5a'">
       <div class="char-name">PASTOR BRITT</div>
-      <div class="char-chapters">CH. 5–8</div>
     </div>
-  </div>
 
-  <div class="difficulty-label intermediate">INTERMEDIATE</div>
-  <div class="char-row">
-    <div class="char-card" onclick="selectCharacter('one')">
+    <!-- ROW 2 LEFT: One' -->
+    <div class="char-card" onclick="selectCharacter('one')" style="grid-column:1; grid-row:2;">
       <img class="char-avatar" src="Pastor%20One'.PNG" alt="Pastor One" onerror="this.style.background='#1a2f5a'">
       <div class="char-name">PASTOR ONE'</div>
-      <div class="char-chapters">CH. 9–14</div>
     </div>
-    <div class="char-card" onclick="selectCharacter('adam')">
+
+    <!-- ROW 2 RIGHT: Adam -->
+    <div class="char-card" onclick="selectCharacter('adam')" style="grid-column:3; grid-row:2;">
       <img class="char-avatar" src="Pastor%20Adam.png" alt="Pastor Adam" onerror="this.style.background='#1a2f5a'">
       <div class="char-name">PASTOR ADAM</div>
-      <div class="char-chapters">CH. 15–19</div>
     </div>
-  </div>
 
-  <div class="difficulty-label expert">EXPERT</div>
-  <div class="char-row">
-    <div class="char-card" onclick="selectCharacter('joby')">
+    <!-- ROW 3 LEFT: Joby -->
+    <div class="char-card" onclick="selectCharacter('joby')" style="grid-column:1; grid-row:3;">
       <img class="char-avatar" src="Pastor%20Joby.PNG" alt="Pastor Joby" onerror="this.style.background='#1a2f5a'">
       <div class="char-name">PASTOR JOBY</div>
-      <div class="char-chapters">CH. 20–24</div>
     </div>
-    <div class="char-card" onclick="selectCharacter('buckles')">
+
+    <!-- ROW 3 RIGHT: Buckles -->
+    <div class="char-card" onclick="selectCharacter('buckles')" style="grid-column:3; grid-row:3;">
       <img class="char-avatar" src="Elder%20Buckles.PNG" alt="Elder Buckles" onerror="this.style.background='#1a2f5a'">
       <div class="char-name">ELDER BUCKLES</div>
-      <div class="char-chapters">CH. 25–28</div>
     </div>
-  </div>
 
+  </div>
   <div class="select-footer-pad"></div>
 </div>
 
