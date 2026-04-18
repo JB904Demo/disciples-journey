@@ -48,65 +48,75 @@
     background: var(--blue-deep);
     position: relative;
     align-items: center;
-    justify-content: flex-end;
-    padding-bottom: env(safe-area-inset-bottom, 40px);
+    justify-content: space-between;
   }
 
   .home-bg {
     position: absolute; inset: 0;
     background-image: url('Home%20Screen.PNG');
     background-size: cover;
-    background-position: center top;
+    background-position: center center;
+    z-index: 0;
   }
 
-  /* halftone overlay */
+  /* Fade top and bottom, leave middle clear */
   .home-bg::after {
     content: '';
     position: absolute; inset: 0;
-    background: 
-      radial-gradient(circle at 50% 100%, rgba(10,22,40,0.85) 0%, rgba(10,22,40,0.3) 60%, transparent 80%),
-      repeating-radial-gradient(circle at 0 0, transparent 0, transparent 4px, rgba(0,180,255,0.04) 4px, rgba(0,180,255,0.04) 5px);
+    background: linear-gradient(to bottom,
+      rgba(10,22,40,0.88) 0%,
+      rgba(10,22,40,0.35) 20%,
+      rgba(10,22,40,0.0) 38%,
+      rgba(10,22,40,0.0) 60%,
+      rgba(10,22,40,0.55) 80%,
+      rgba(10,22,40,0.92) 100%
+    );
   }
 
-  /* Speed lines emanating from top-center */
   .speed-lines {
     position: absolute; inset: 0;
     overflow: hidden;
     pointer-events: none;
+    z-index: 1;
   }
   .speed-lines::before {
     content: '';
     position: absolute;
     top: -100px; left: 50%;
     width: 2px; height: 300px;
-    background: linear-gradient(to bottom, transparent, rgba(0,229,255,0.6), transparent);
+    background: linear-gradient(to bottom, transparent, rgba(0,229,255,0.5), transparent);
     box-shadow:
-      -180px 60px 0 rgba(0,229,255,0.3),
-      180px 60px 0 rgba(0,229,255,0.3),
-      -340px 120px 0 rgba(0,229,255,0.15),
-      340px 120px 0 rgba(0,229,255,0.15),
-      -80px 30px 0 rgba(255,224,0,0.2),
-      80px 30px 0 rgba(255,224,0,0.2);
-    transform: translateX(-50%) rotate(0deg);
+      -180px 60px 0 rgba(0,229,255,0.2),
+      180px 60px 0 rgba(0,229,255,0.2),
+      -340px 120px 0 rgba(0,229,255,0.1),
+      340px 120px 0 rgba(0,229,255,0.1);
+    transform: translateX(-50%);
     animation: speedPulse 3s ease-in-out infinite;
   }
   @keyframes speedPulse {
-    0%, 100% { opacity: 0.4; }
-    50% { opacity: 0.9; }
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.7; }
   }
 
-  .home-content {
+  /* Title — pinned top */
+  .home-top {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 56px 24px 0;
+    width: 100%;
+  }
+
+  /* Button — pinned bottom */
+  .home-bottom {
     position: relative;
     z-index: 10;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-bottom: 50px;
-    gap: 20px;
-  }
-
-  .app-title-block {
-    text-align: center;
+    width: 100%;
+    padding: 0 24px;
+    padding-bottom: max(env(safe-area-inset-bottom, 0px) + 28px, 44px);
   }
 
   .app-subtitle {
@@ -121,8 +131,8 @@
 
   .app-title {
     font-family: 'Bangers', cursive;
-    font-size: 52px;
-    line-height: 1;
+    font-size: 62px;
+    line-height: 0.92;
     color: var(--white);
     text-shadow:
       4px 4px 0 var(--blue-manga),
@@ -131,6 +141,7 @@
       -2px 2px 0 var(--ink),
       0 0 30px rgba(0,229,255,0.5);
     letter-spacing: 3px;
+    margin-top: 6px;
   }
 
   /* FLASHING MANGA BUTTON */
@@ -662,14 +673,17 @@
      SCREEN 1: HOME
 ═══════════════════════════════════════ -->
 <div class="screen active" id="screen-home">
-  <div class="home-bg">
-    <div class="speed-lines"></div>
+  <div class="home-bg"></div>
+  <div class="speed-lines"></div>
+
+  <!-- Title pinned to top -->
+  <div class="home-top">
+    <div class="app-subtitle">The Gospel of Matthew</div>
+    <div class="app-title">A Disciple's<br>Journey</div>
   </div>
-  <div class="home-content">
-    <div class="app-title-block">
-      <div class="app-subtitle">The Gospel of Matthew</div>
-      <div class="app-title">A Disciple's<br>Journey</div>
-    </div>
+
+  <!-- Button pinned to bottom -->
+  <div class="home-bottom">
     <button class="btn-standFirm" onclick="goTo('screen-intro')">
       ⚡ STAND FIRM...<br>AND ACT LIKE MEN? ⚡
     </button>
