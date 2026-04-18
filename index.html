@@ -44,13 +44,16 @@
   /* ══════════════════════════════════════════
      SCREEN 1 — HOME
   ══════════════════════════════════════════ */
+  /* ══ SCREEN 1 — HOME ══ */
   #screen-home {
     background: var(--blue-deep);
     position: relative;
-    align-items: center;
-    justify-content: space-between;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
   }
 
+  /* Full-screen background image — no overlays blocking it */
   .home-bg {
     position: absolute; inset: 0;
     background-image: url('Home%20Screen.PNG');
@@ -59,17 +62,17 @@
     z-index: 0;
   }
 
-  /* Fade top and bottom, leave middle clear */
+  /* Very light dark vignette only at top, so title is readable */
   .home-bg::after {
     content: '';
     position: absolute; inset: 0;
     background: linear-gradient(to bottom,
-      rgba(10,22,40,0.88) 0%,
-      rgba(10,22,40,0.35) 20%,
-      rgba(10,22,40,0.0) 38%,
-      rgba(10,22,40,0.0) 60%,
-      rgba(10,22,40,0.55) 80%,
-      rgba(10,22,40,0.92) 100%
+      rgba(10,22,40,0.72) 0%,
+      rgba(10,22,40,0.15) 18%,
+      rgba(10,22,40,0.0) 35%,
+      rgba(10,22,40,0.0) 72%,
+      rgba(10,22,40,0.15) 88%,
+      rgba(10,22,40,0.0) 100%
     );
   }
 
@@ -84,12 +87,10 @@
     position: absolute;
     top: -100px; left: 50%;
     width: 2px; height: 300px;
-    background: linear-gradient(to bottom, transparent, rgba(0,229,255,0.5), transparent);
+    background: linear-gradient(to bottom, transparent, rgba(0,229,255,0.4), transparent);
     box-shadow:
-      -180px 60px 0 rgba(0,229,255,0.2),
-      180px 60px 0 rgba(0,229,255,0.2),
-      -340px 120px 0 rgba(0,229,255,0.1),
-      340px 120px 0 rgba(0,229,255,0.1);
+      -180px 60px 0 rgba(0,229,255,0.15),
+      180px 60px 0 rgba(0,229,255,0.15);
     transform: translateX(-50%);
     animation: speedPulse 3s ease-in-out infinite;
   }
@@ -98,91 +99,87 @@
     50% { opacity: 0.7; }
   }
 
-  /* Title — pinned top */
+  /* Title — absolutely pinned to top */
   .home-top {
-    position: relative;
+    position: absolute;
+    top: 0; left: 0; right: 0;
     z-index: 10;
-    text-align: center;
-    padding: 56px 24px 0;
-    width: 100%;
-  }
-
-  /* Button — pinned bottom */
-  .home-bottom {
-    position: relative;
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    padding: 0 24px;
-    padding-bottom: max(env(safe-area-inset-bottom, 0px) + 28px, 44px);
+    text-align: left;
+    padding: 52px 20px 16px;
   }
 
   .app-subtitle {
     font-family: 'Oswald', sans-serif;
     font-weight: 600;
-    font-size: 13px;
+    font-size: 12px;
     letter-spacing: 6px;
     color: var(--cyan-glow);
     text-transform: uppercase;
     text-shadow: 0 0 12px var(--cyan-glow);
+    display: none; /* hidden — title is enough */
   }
 
   .app-title {
     font-family: 'Bangers', cursive;
-    font-size: 62px;
-    line-height: 0.92;
+    font-size: 68px;
+    line-height: 0.9;
     color: var(--white);
     text-shadow:
-      4px 4px 0 var(--blue-manga),
-      -2px -2px 0 var(--ink),
-      2px -2px 0 var(--ink),
-      -2px 2px 0 var(--ink),
-      0 0 30px rgba(0,229,255,0.5);
-    letter-spacing: 3px;
-    margin-top: 6px;
+      5px 5px 0 var(--blue-manga),
+      -3px -3px 0 var(--ink),
+      3px -3px 0 var(--ink),
+      -3px 3px 0 var(--ink),
+      0 0 40px rgba(0,229,255,0.6);
+    letter-spacing: 2px;
   }
 
-  /* FLASHING MANGA BUTTON */
+  /* Button bar — absolutely pinned to bottom, full width */
+  .home-bottom {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    z-index: 10;
+  }
+
+  /* FLASHING MANGA BUTTON — full width bar style */
   .btn-standFirm {
     position: relative;
     font-family: 'Bangers', cursive;
-    font-size: 22px;
+    font-size: 28px;
     letter-spacing: 2px;
     color: var(--ink);
     background: var(--yellow-manga);
-    border: var(--outline-width) solid var(--ink);
-    padding: 16px 28px;
+    border: none;
+    border-top: 4px solid var(--ink);
+    padding: 22px 20px;
+    padding-bottom: max(calc(env(safe-area-inset-bottom) + 22px), 28px);
     cursor: pointer;
-    clip-path: polygon(6px 0%, calc(100% - 6px) 0%, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) 100%, 6px 100%, 0% calc(100% - 6px), 0% 6px);
-    box-shadow: 5px 5px 0 var(--ink);
+    width: 100%;
+    display: block;
     animation: mangaFlash 1.2s ease-in-out infinite;
     text-align: center;
-    line-height: 1.2;
-    max-width: 300px;
+    line-height: 1.15;
+    clip-path: none;
+    box-shadow: none;
     -webkit-user-select: none;
   }
 
   .btn-standFirm::before {
     content: '';
     position: absolute;
-    inset: 4px;
-    border: 2px solid rgba(255,255,255,0.5);
-    clip-path: polygon(4px 0%, calc(100% - 4px) 0%, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0% calc(100% - 4px), 0% 4px);
+    top: 6px; left: 6px; right: 6px;
+    height: 3px;
+    background: rgba(255,255,255,0.5);
     pointer-events: none;
   }
 
   @keyframes mangaFlash {
     0%, 100% { 
       background: var(--yellow-manga);
-      box-shadow: 5px 5px 0 var(--ink), 0 0 20px rgba(255,224,0,0.5);
-      transform: scale(1);
+      box-shadow: inset 0 -4px 0 rgba(0,0,0,0.15);
     }
     50% { 
-      background: #fff700;
-      box-shadow: 5px 5px 0 var(--ink), 0 0 35px rgba(255,224,0,0.9), 0 0 60px rgba(255,224,0,0.4);
-      transform: scale(1.03);
+      background: #fff500;
+      box-shadow: inset 0 -4px 0 rgba(0,0,0,0.15), 0 -8px 30px rgba(255,224,0,0.5);
     }
   }
 
