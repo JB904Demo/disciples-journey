@@ -54,7 +54,7 @@
 
   .home-bg {
     position: absolute; inset: 0;
-    background-image: url('Home_Screen.PNG');
+    background-image: url('Home%20Screen.PNG');
     background-size: cover;
     background-position: center top;
   }
@@ -187,7 +187,7 @@
 
   #screen-intro .bg-img {
     position: absolute; inset: 0;
-    background-image: url('Second_Screen.jpg');
+    background-image: url('Second%20Screen.jpg');
     background-size: cover;
     background-position: center;
     opacity: 0.25;
@@ -420,7 +420,7 @@
 
   .reading-bg {
     position: absolute; inset: 0;
-    background-image: url('Reading_Page_Background.PNG');
+    background-image: url('Reading%20Page%20Background.PNG');
     background-size: cover;
     background-position: center;
     opacity: 0.18;
@@ -700,12 +700,12 @@
   <div class="difficulty-label">BEGINNER</div>
   <div class="char-row">
     <div class="char-card" onclick="selectCharacter('wade')">
-      <img class="char-avatar" src="Disciple_Wade.PNG" alt="Disciple Wade" onerror="this.style.background='#1a2f5a'">
+      <img class="char-avatar" src="Disciple%20Wade.PNG" alt="Disciple Wade" onerror="this.style.background='#1a2f5a'">
       <div class="char-name">DISCIPLE WADE</div>
       <div class="char-chapters">CH. 1–4</div>
     </div>
     <div class="char-card" onclick="selectCharacter('britt')">
-      <img class="char-avatar" src="Pastor_Britt.PNG" alt="Pastor Britt" onerror="this.style.background='#1a2f5a'">
+      <img class="char-avatar" src="Pastor%20Britt.PNG" alt="Pastor Britt" onerror="this.style.background='#1a2f5a'">
       <div class="char-name">PASTOR BRITT</div>
       <div class="char-chapters">CH. 5–8</div>
     </div>
@@ -714,12 +714,12 @@
   <div class="difficulty-label intermediate">INTERMEDIATE</div>
   <div class="char-row">
     <div class="char-card" onclick="selectCharacter('one')">
-      <img class="char-avatar" src="Pastor_One_.PNG" alt="Pastor One" onerror="this.style.background='#1a2f5a'">
+      <img class="char-avatar" src="Pastor%20One'.PNG" alt="Pastor One" onerror="this.style.background='#1a2f5a'">
       <div class="char-name">PASTOR ONE'</div>
       <div class="char-chapters">CH. 9–14</div>
     </div>
     <div class="char-card" onclick="selectCharacter('adam')">
-      <img class="char-avatar" src="Pastor_Adam.png" alt="Pastor Adam" onerror="this.style.background='#1a2f5a'">
+      <img class="char-avatar" src="Pastor%20Adam.png" alt="Pastor Adam" onerror="this.style.background='#1a2f5a'">
       <div class="char-name">PASTOR ADAM</div>
       <div class="char-chapters">CH. 15–19</div>
     </div>
@@ -728,12 +728,12 @@
   <div class="difficulty-label expert">EXPERT</div>
   <div class="char-row">
     <div class="char-card" onclick="selectCharacter('joby')">
-      <img class="char-avatar" src="Pastor_Joby.PNG" alt="Pastor Joby" onerror="this.style.background='#1a2f5a'">
+      <img class="char-avatar" src="Pastor%20Joby.PNG" alt="Pastor Joby" onerror="this.style.background='#1a2f5a'">
       <div class="char-name">PASTOR JOBY</div>
       <div class="char-chapters">CH. 20–24</div>
     </div>
     <div class="char-card" onclick="selectCharacter('buckles')">
-      <img class="char-avatar" src="Elder_Buckles.PNG" alt="Elder Buckles" onerror="this.style.background='#1a2f5a'">
+      <img class="char-avatar" src="Elder%20Buckles.PNG" alt="Elder Buckles" onerror="this.style.background='#1a2f5a'">
       <div class="char-name">ELDER BUCKLES</div>
       <div class="char-chapters">CH. 25–28</div>
     </div>
@@ -754,7 +754,7 @@
       <div class="reading-char-name" id="readingCharName">DISCIPLE WADE</div>
       <div class="reading-char-chapters" id="readingCharChapters">CHAPTERS 1–4</div>
     </div>
-    <img class="reading-avatar" id="readingAvatar" src="Disciple_Wade.PNG" alt="">
+    <img class="reading-avatar" id="readingAvatar" src="Disciple%20Wade.PNG" alt="">
   </div>
 
   <div class="chapter-tabs" id="chapterTabs"></div>
@@ -772,12 +772,12 @@
 //  CHARACTER DATA
 // ═══════════════════════════════════════════════════════════
 const CHARACTERS = {
-  wade:    { name: "DISCIPLE WADE",  chapters: "CH. 1–4",    range: [1,2,3,4],     img: "Disciple_Wade.PNG" },
-  britt:   { name: "PASTOR BRITT",   chapters: "CH. 5–8",    range: [5,6,7,8],     img: "Pastor_Britt.PNG"  },
-  one:     { name: "PASTOR ONE'",    chapters: "CH. 9–14",   range: [9,10,11,12,13,14], img: "Pastor_One_.PNG" },
-  adam:    { name: "PASTOR ADAM",    chapters: "CH. 15–19",  range: [15,16,17,18,19],   img: "Pastor_Adam.png" },
-  joby:    { name: "PASTOR JOBY",    chapters: "CH. 20–24",  range: [20,21,22,23,24],   img: "Pastor_Joby.PNG" },
-  buckles: { name: "ELDER BUCKLES",  chapters: "CH. 25–28",  range: [25,26,27,28],      img: "Elder_Buckles.PNG" },
+  wade:    { name: "DISCIPLE WADE",  chapters: "CH. 1–4",    range: [1,2,3,4],     img: "Disciple%20Wade.PNG" },
+  britt:   { name: "PASTOR BRITT",   chapters: "CH. 5–8",    range: [5,6,7,8],     img: "Pastor%20Britt.PNG"  },
+  one:     { name: "PASTOR ONE'",    chapters: "CH. 9–14",   range: [9,10,11,12,13,14], img: "Pastor%20One'.PNG" },
+  adam:    { name: "PASTOR ADAM",    chapters: "CH. 15–19",  range: [15,16,17,18,19],   img: "Pastor%20Adam.png" },
+  joby:    { name: "PASTOR JOBY",    chapters: "CH. 20–24",  range: [20,21,22,23,24],   img: "Pastor%20Joby.PNG" },
+  buckles: { name: "ELDER BUCKLES",  chapters: "CH. 25–28",  range: [25,26,27,28],      img: "Elder%20Buckles.PNG" },
 };
 
 // ═══════════════════════════════════════════════════════════
